@@ -1,0 +1,5 @@
+.git
+.venv
+foobar.crt
+foobar.csr
+foobar.key

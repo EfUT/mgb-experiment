@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MGB Exp.</title>
+</head>
+<body>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <button onclick="permission_request();">動作と方向へのアクセス許可</button><br>
+      <label for="x">X:</label>
+      <input type="number" name="x" id="x" step="0.00001"/><br />
+      <label for="y">Y:</label>
+      <input type="number" name="y" id="y" step="0.00001"/><br />
+      <label for="z">Z:</label>
+      <input type="number" name="z" id="z" step="0.00001"/><br>
+
+      <label for="title">Title:</label>
+      <input type="text" name="title" id="id_title">
+
+
+
+      <p>
+        <label for="id_image">Image:</label>
+        <input
+          type="file"
+          name="image"
+          accept="image/*"
+          required=""
+          id="id_image"
+        />
+      </p>
+      <button type="submit">Upload</button>
+    </form>
+
+    {% if img_obj %}
+    <h3>Successfully uploaded: {{img_obj.title}}</h3>
+    <img src="{{img_obj.image.url}}" alt="connect" />
+    {% endif %}
+
+
+    <script>
+        let d = new Date()
+        document.getElementById('id_title').value = d.getTime()
+
+      const observer = () => {
+        if (DeviceMotionEvent.requestPermission) {
+          DeviceMotionEvent.requestPermission().then((permissionState) => {
+            if (permissionState === "granted") {
+              window.addEventListener("devicemotion", (e) => {
+                const acc = e.accelerationIncludingGravity;
+                const x = acc.x;
+                const y = acc.y;
+                const z = acc.z;
+
+                document.getElementById("x").value = x.toFixed(5);
+                document.getElementById("y").value = y.toFixed(5);
+                document.getElementById("z").value = z.toFixed(5);
+              });
+            } else {
+              alert(permissionState);
+            }
+          });
+        }
+      };
+      observer();
+
+      function permission_request() {
+        if (
+          DeviceOrientationEvent &&
+          DeviceOrientationEvent.requestPermission &&
+          typeof DeviceOrientationEvent.requestPermission === "function"
+        ) {
+          DeviceMotionEvent.requestPermission().then(post_function);
+          window.addEventListener(
+            "devicemotion",
+            function (e) {
+              // 何らかの処理
+            },
+            false
+          );
+        }
+      }
+    </script>
+  </body>
+</html>
