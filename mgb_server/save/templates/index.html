@@ -1,88 +1,234 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MGB Exp.</title>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MGB Exp.</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
+  </script>
+  <style>
+    .w50 {
+      width: 50%;
+    }
+  </style>
 </head>
+
 <body>
-    <form method="POST" enctype="multipart/form-data">
+  <div class="container">
+    <div class="mx-auto">
+      <button class="btn btn-secondary" onclick="permission_request();">動作と方向へのアクセス許可</button><br>
+      <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-        <button onclick="permission_request();">動作と方向へのアクセス許可</button><br>
-      <label for="x">X:</label>
-      <input type="number" name="x" id="x" step="0.00001"/><br />
-      <label for="y">Y:</label>
-      <input type="number" name="y" id="y" step="0.00001"/><br />
-      <label for="z">Z:</label>
-      <input type="number" name="z" id="z" step="0.00001"/><br>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>x acc.</th>
+              <td><input class="form-control form-control-sm" type="number" name="x" id="x"
+                  step="0.00001" />m/s<sup>2</sup></td>
+            </tr>
+            <tr>
+              <th>y acc.</th>
+              <td><input class="form-control form-control-sm" type="number" name="y" id="y"
+                  step="0.00001" />m/s<sup>2</sup></td>
+            </tr>
+            <tr>
+              <th>z acc.</th>
+              <td><input class="form-control form-control-sm" type="number" name="z" id="z"
+                  step="0.00001" />m/s<sup>2</sup></td>
+            </tr>
+            <!-- <tr>
+              <th>x angle</th>
+              <td>
+                <p id="angle_x"></p>
+              </td>
+            </tr>
+            <tr>
+              <th>y angle</th>
+              <td>
+                <p id="angle_y"></p>
+              </td>
+            </tr>
+            <tr>
+              <th>z angle</th>
+              <td>
+                <p id="angle_z"></p>
+              </td>
+            </tr> -->
+            <tr>
+              <th>x angle</th>
+              <td>
+                <p id="new_angle_x"></p>
+              </td>
+            </tr>
+            <tr>
+              <th>y angle</th>
+              <td>
+                <p id="new_angle_y"></p>
+              </td>
+            </tr>
 
-      <label for="title">Title:</label>
-      <input type="text" name="title" id="id_title">
+            <tr>
+              <th>accuracy</th>
+              <td>
+                <p id="sos"></p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <label for="title">Title:</label>
+        <input class="form-control form-control-sm" type="text" name="title" id="id_title">
+
+        <label for="a">a:</label>
+        <input name="a" id="id_a" type="text" class="form-control form-control-sm">
+
+        <label for="b">b:</label>
+        <input name="b" id="id_b" type="text" class="form-control form-control-sm">
+        
+        <label for="c">c:</label>
+        <input name="c" id="id_c" type="text" class="form-control form-control-sm">
+
+        <label for="h">h:</label>
+        <input name="h" id="id_h" type="text" class="form-control form-control-sm">
+
+        <label for="imaginary_planes_angle">Imaginary Plane's Angle(degrees):</label>
+        <input name="imaginary_planes_angle" id="id_im_angle" type="text" class="form-control form-control-sm">
+
+        
 
 
 
-      <p>
-        <label for="id_image">Image:</label>
-        <input
-          type="file"
-          name="image"
-          accept="image/*"
-          required=""
-          id="id_image"
-        />
-      </p>
-      <button type="submit">Upload</button>
-    </form>
+        <p>
+          <label for="id_image" class="form-label">Image:</label>
+          <input class="form-control" type="file" name="image" accept="image/*" required="" id="id_image" />
+        </p>
+        <div class="mx-auto">
+          <button class="btn btn-success" type="submit">Upload</button>
+        </div>
+      </form>
 
-    {% if img_obj %}
-    <h3>Successfully uploaded: {{img_obj.title}}</h3>
-    <img src="{{img_obj.image.url}}" alt="connect" />
-    {% endif %}
+      {% if raw_img %}
+      <h3>Successfully uploaded: {{title}}</h3>
+
+      <table class="table">
+        <tbody>
+          <tr>
+            <th>Observed x:</th>
+            <td>{{ox}}</td>
+          </tr>
+          <tr>
+            <th>Observed y:</th>
+            <td>{{oy}}</td>
+          </tr>
+          <tr>
+            <th>Observed z:</th>
+            <td>{{oz}}</td>
+          </tr>
+          <tr>
+            <th>Inferred x:</th>
+            <td>{{ix}}</td>
+          </tr>
+          <tr>
+            <th>Inferred y:</th>
+            <td>{{iy}}</td>
+          </tr>
+          <tr>
+            <th>Inferred z:</th>
+            <td>{{iz}}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      {% if err_red %}
+      <p>Red {{err_red}}</p>
+      {% else %}
+      <p>Center of Red: [x y] = {{center_red}}</p>
+      {% endif %}
+
+      {% if err_blue %}
+      <p>Blue {{err_blue}}</p>
+      {% else %}
+      <p>Center of Blue: [x y] = {{center_blue}}</p>
+      {% endif %}
+
+      <img class="img-thumbnail" src="{{raw_image.url}}" alt="connect" />
+      {% endif %}
+    </div>
+  </div>
+  <script>
+    let d = new Date();
+    document.getElementById('id_title').value = d.getTime();
+
+    const observer = () => {
+      if (DeviceMotionEvent.requestPermission) {
+        DeviceMotionEvent.requestPermission().then((permissionState) => {
+          if (permissionState === "granted") {
+            window.addEventListener("devicemotion", (e) => {
+              const acc = e.accelerationIncludingGravity;
+              const x = acc.x;
+              const y = acc.y;
+              const z = acc.z;
+
+              document.getElementById("x").value = x.toFixed(2);
+              document.getElementById("y").value = y.toFixed(2);
+              document.getElementById("z").value = z.toFixed(2);
+
+              /*document.getElementById("angle_x").innerText = Math.abs(Math.atan(x / Math.sqrt(y ** 2 +
+                z **
+                2)) * 180 / Math.PI).toFixed(1) + "°";
+              document.getElementById("angle_y").innerText = Math.abs(Math.atan(y / Math.sqrt(z ** 2 +
+                x **
+                2)) * 180 / Math.PI).toFixed(1) + "°";
+              document.getElementById("angle_z").innerText = Math.abs(Math.atan(z / Math.sqrt(x ** 2 +
+                y **
+                2)) * 180 / Math.PI).toFixed(1) + "°";
+                */
+
+                document.getElementById("new_angle_x").innerText = Math.abs(Math.asin(y / Math.sqrt(y**2 + z**2)) * 180 / Math.PI).toFixed(1) + "°";
+                document.getElementById("new_angle_y").innerText = Math.abs(Math.asin(x / Math.sqrt(x**2 + z**2)) * 180 / Math.PI).toFixed(1) + "°";
 
 
-    <script>
-        let d = new Date()
-        document.getElementById('id_title').value = d.getTime()
+              
 
-      const observer = () => {
-        if (DeviceMotionEvent.requestPermission) {
-          DeviceMotionEvent.requestPermission().then((permissionState) => {
-            if (permissionState === "granted") {
-              window.addEventListener("devicemotion", (e) => {
-                const acc = e.accelerationIncludingGravity;
-                const x = acc.x;
-                const y = acc.y;
-                const z = acc.z;
 
-                document.getElementById("x").value = x.toFixed(5);
-                document.getElementById("y").value = y.toFixed(5);
-                document.getElementById("z").value = z.toFixed(5);
-              });
-            } else {
-              alert(permissionState);
-            }
-          });
-        }
-      };
-      observer();
-
-      function permission_request() {
-        if (
-          DeviceOrientationEvent &&
-          DeviceOrientationEvent.requestPermission &&
-          typeof DeviceOrientationEvent.requestPermission === "function"
-        ) {
-          DeviceMotionEvent.requestPermission().then(post_function);
-          window.addEventListener(
-            "devicemotion",
-            function (e) {
-              // 何らかの処理
-            },
-            false
-          );
-        }
+              document.getElementById("sos").innerText = Math.abs(Math.sqrt(x ** 2 + y ** 2 + z ** 2) -
+                9.81).toFixed(2);
+            });
+          } else {
+            alert(permissionState);
+          }
+        });
       }
-    </script>
-  </body>
+    };
+    observer();
+
+    function permission_request() {
+      if (
+        DeviceOrientationEvent &&
+        DeviceOrientationEvent.requestPermission &&
+        typeof DeviceOrientationEvent.requestPermission === "function"
+      ) {
+        DeviceMotionEvent.requestPermission().then(post_function);
+        window.addEventListener(
+          "devicemotion",
+          function (e) {
+            // 何らかの処理
+          },
+          false
+        );
+      }
+    }
+  </script>
+</body>
 </html>

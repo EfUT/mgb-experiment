@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "/Users/damin/Programs/MGBExp2/mgb_server/manage.py",
             "args": [
-                "runserver"
+                "runsslserver", "0.0.0.0:8000", "--certificate", "/Users/damin/Programs/MGBExp2/foobar.crt", "--key", "/Users/damin/Programs/MGBExp2/foobar.key"
             ],
             "django": true
         }
